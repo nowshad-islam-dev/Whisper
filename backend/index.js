@@ -1,8 +1,7 @@
-import dotenv from 'dotenv';
-dotenv.config();
-
+import 'dotenv/config';
 import express from 'express';
-import { connectDB } from './config/db.js';
+
+import pool, { connectDB } from './config/db.js';
 import client from './config/redisClient.js'; // Connect to Redis
 
 const app = express();
@@ -19,7 +18,7 @@ const PORT = process.env.PORT || 4000;
     await client.set('message', 'Hello from Redis');
     const message = await client.get('message');
 
-    const result = await db.query('SELECT NOW()');
+    const result = await pool.query('SELECT NOW()');
     res.send(`DB Time: ${result.rows[0].now} && Redis Message: ${message}`);
   });
 
