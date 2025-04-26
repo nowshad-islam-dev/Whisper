@@ -1,0 +1,33 @@
+# Use root/example user/password credentials
+version: '3.9'
+
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: postgres_db
+    restart: unless-stopped
+
+    environment:
+      POSTGRES_USER: root
+      POSTGRES_PASSWORD: example
+      POSTGRES_DB: pg_whisper
+
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+    ports:
+      - '5432:5432'
+
+  redis:
+    image: redis:7.0-alpine
+    container_name: redis_db
+    restart: unless-stopped
+
+    ports:
+      - '6379:6379'
+    volumes:
+      - redisdata:/data
+
+volumes:
+  pgdata:
+  redisdata:

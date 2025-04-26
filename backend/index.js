@@ -1,18 +1,29 @@
-import express from 'express';
 import dotenv from 'dotenv';
-
 dotenv.config();
+
+import express from 'express';
+import { connectDB } from './config/db.js';
+import client from './config/redisClient.js'; // Connect to Redis
+
 const app = express();
 
 // Middleware
 app.use(express.json());
 
-// Basic route
-app.get('/', (req, res) => {
-  res.send('Chat App Backend is Running!');
-});
-
 const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-});
+
+(async () => {
+  const db = await connectDB();
+
+  app.get('/', async (req, res) => {
+    await client.set('message', 'Hello from Redis');
+    const message = await client.get('message');
+
+    const result = await db.query('SELECT NOW()');
+    res.send(`DB Time: ${result.rows[0].now} && Redis Message: ${message}`);
+  });
+
+  app.listen(PORT, () => {
+    console.log(`🚀 Server is running on http://localhost:${PORT}`);
+  });
+})();
