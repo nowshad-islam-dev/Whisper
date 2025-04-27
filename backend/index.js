@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
+import helmet from 'helmet';
 
 import rateLimiter from './Interceptor/rateLimiter.js';
 import pool, { connectDB } from './config/db.js';
@@ -11,6 +12,7 @@ const app = express();
 
 // Middlewares
 app.use(express.json({ limit: '128kb' }));
+app.use(helmet());
 app.use(async (req, res, next) => {
   try {
     await rateLimiter.consume(req.ip);
