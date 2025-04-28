@@ -1,7 +1,8 @@
 import express from 'express';
 import helmet from 'helmet';
 import rateLimiter from './Interceptor/rateLimiter.js';
-import authRoutes from './routes/auth.routes.js';
+import authRoutes from './routes/auth.route.js';
+import historyRoutes from './routes/history.route.js';
 import client from './config/redisClient.js';
 import pool from './config/db.js';
 
@@ -23,6 +24,7 @@ app.use(async (req, res, next) => {
 
 // --- Routes ---
 app.use('/api/auth', authRoutes);
+app.use('/api/history', historyRoutes);
 
 // --- Root Route ---
 app.get('/', async (req, res, next) => {
