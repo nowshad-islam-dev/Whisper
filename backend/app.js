@@ -4,6 +4,7 @@ import rateLimiter from './Interceptor/rateLimiter.js';
 import authRoutes from './routes/auth.route.js';
 import historyRoutes from './routes/history.route.js';
 import client from './config/redisClient.js';
+import conversationRoutes from './routes/conversation.route.js';
 import pool from './config/db.js';
 
 const app = express();
@@ -25,6 +26,7 @@ app.use(async (req, res, next) => {
 // --- Routes ---
 app.use('/api/auth', authRoutes);
 app.use('/api/history', historyRoutes);
+app.use('/api/conversations', conversationRoutes);
 
 // --- Root Route ---
 app.get('/', async (req, res, next) => {
