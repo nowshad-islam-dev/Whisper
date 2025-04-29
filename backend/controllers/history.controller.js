@@ -4,10 +4,10 @@ import { apiResponse } from '../utils/apiResponse.js';
 
 export const getChatHistory = async (req, res) => {
   try {
-    const { userId } = req.params;
+    const { conversationId } = req.params;
     const result = await pool.query(
-      'SELECT * FROM messages receiver_id = $1 OR sender_id = $1 ORDER BY created_at ASC',
-      [userId]
+      'SELECT * FROM messages WHERE conversation_id = $1 ORDER BY created_at ASC',
+      [conversationId]
     );
 
     return apiResponse(
