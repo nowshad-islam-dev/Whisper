@@ -27,8 +27,10 @@ const ChatArea = ({ selectedConversation, userId }) => {
   }, [selectedConversation]);
 
   useEffect(() => {
-    // Join the user's room
-    socket.emit('joinRoom', { userId });
+    // Join the conversation room and listen for messages
+    if (!selectedConversation) return;
+
+    socket.emit('joinConversation', selectedConversation.id);
 
     // Listen for incoming messages
     socket.on('reveiveMessage', (message) => {
@@ -49,9 +51,14 @@ const ChatArea = ({ selectedConversation, userId }) => {
     if (newMessage.trim()) {
       socket.emit('sendMessage', {
         senderId: userId,
-        receiverId: 'receiverId', // Replace with actual receiver ID
+        conversationId: selectedConversation.id, // Use the conversation ID
         message: newMessage,
       });
+
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { sender_id: userId, message: newMessage, created_at: new Date() },
+      ]); // Ui update
       setNewMessage('');
     }
   };
