@@ -1,7 +1,24 @@
+import { useState, useEffect } from 'react';
 import { Avatar, Button } from '@mui/material';
 import { Logout } from '@mui/icons-material';
+import axios from 'axios';
 
-const Sidebar = ({ user, conversations, onSelectConversation, onLogout }) => {
+const Sidebar = ({ user, onSelectConversation, onLogout }) => {
+  const [conversations, setConversations] = useState([]);
+
+  useEffect(() => {
+    const fetchConversations = async () => {
+      try {
+        const response = await axios.get(`/conversations/${user.id}`);
+        setConversations(response.data.data ?? []);
+      } catch (err) {
+        console.error('Error fetching conversations:', error);
+      }
+    };
+
+    fetchConversations();
+  }, [user.id]);
+
   return (
     <div className="w-80 bg-gray-900 text-white flex flex-col h-screen">
       {/* Header */}
