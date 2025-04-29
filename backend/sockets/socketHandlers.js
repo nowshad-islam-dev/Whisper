@@ -4,21 +4,26 @@ export default function socketHandler(io) {
   io.on('connection', (socket) => {
     console.log(`🔌 A user connected: ${socket.id}`);
 
+    socket.on('joinConversation', (conversationId) => {
+      socket.join(conversationId); // Join the conversation room
+      console.log(`User joined conversation ${conversationId}`);
+    });
+
     // Listen for incoming messages
-    socket.on('sendMessage', async ({ senderId, receiverId, message }) => {
+    socket.on('sendMessage', async ({ senderId, conversationId, message }) => {
       try {
         // Save the message to the database
         const result = await pool.query(
           'INSERT INTO messages (sender_id, receiver_id, message) VALUES ($1, $2, $3) RETURNING *',
-          [senderId, receiverId, message]
+          [senderId, conversationId, message]
         );
 
         const savedMessage = result.rows[0];
 
         // Broadcast the message to the receiver
-        io.to(receiverId).emit('receiveMessage', savedMessage);
+        io.to(conversationId).emit('receiveMessage', savedMessage);
       } catch (err) {
-        console.error('Error saving message:', error);
+        console.error('Error saving message:', err);
       }
     });
 
