@@ -14,7 +14,7 @@ export default function socketHandler(io) {
       try {
         // Save the message to the database
         const result = await pool.query(
-          'INSERT INTO messages (sender_id, receiver_id, message) VALUES ($1, $2, $3) RETURNING *',
+          'INSERT INTO messages (sender_id, conversation_id, message) VALUES ($1, $2, $3) RETURNING *',
           [senderId, conversationId, message]
         );
 
