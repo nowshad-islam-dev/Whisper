@@ -12,7 +12,7 @@ const Sidebar = ({ user, onSelectConversation, onLogout }) => {
         const response = await axios.get(`/conversations/${user.id}`);
         setConversations(response.data.data ?? []);
       } catch (err) {
-        console.error('Error fetching conversations:', error);
+        console.error('Error fetching conversations:', err);
       }
     };
 
