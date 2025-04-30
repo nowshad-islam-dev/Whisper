@@ -1,20 +1,36 @@
 import { useState } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
+import { logout } from '../app/features/authSlice.js';
+import { useNavigate } from 'react-router-dom';
+
+// Components
 import Sidebar from './Sidebar';
 import ChatArea from './ChatArea';
 
 // add "user" prop later
 const ChatApp = () => {
-  const user = { avatar: '', id: 1, username: 'John Doe' }; // Mock user data
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const { user } = useSelector((state) => state.auth);
+
+  // Redirect to login if not authenticated
+  if (!user) {
+    navigate('/login');
+    return null;
+  }
+
   const [selectedConversation, setSelectedConversation] = useState(null);
 
+  /*const user = { avatar: '', id: 1, username: 'John Doe' }; // Mock user data
   const conversations = [
     // Mock conversation data
     { id: 1, name: 'Alice', avatar: '', lastMessage: 'Hello!' },
     { id: 2, name: 'Bob', avatar: '', lastMessage: 'How are you?' },
-  ];
+  ];*/
 
   const handleLogout = () => {
-    console.log('User logged out');
+    dispatch(logout());
+    navigate('/login');
   };
 
   return (
