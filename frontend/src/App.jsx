@@ -1,9 +1,9 @@
-import ChatApp from './components/ChatApp';
+import AppRoutes from './AppRoutes';
 
 const App = () => {
   return (
     <>
-      <ChatApp />
+      <AppRoutes />
     </>
   );
 };
