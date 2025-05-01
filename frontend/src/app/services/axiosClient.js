@@ -3,7 +3,7 @@ import store from '../store.js';
 import { setCredentials } from '../features/authSlice.js';
 
 const apiClient = axios.create({
-  baseURL: 'http://localhost:5000/api/auth',
+  baseURL: 'http://localhost:5000/api',
 });
 
 // Request Interceptor: Add Authorization header
