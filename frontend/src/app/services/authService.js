@@ -1,8 +1,4 @@
-import axios from 'axios';
-
-const apiClient = axios.create({
-  baseURL: 'http://localhost:5000/api',
-});
+import apiClient from './axiosClient.js';
 
 export const register = async (userData) => {
   const response = await apiClient.post('/register', userData);
