@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { Avatar, Button } from '@mui/material';
 import { Logout } from '@mui/icons-material';
-import axios from 'axios';
+import apiClient from '../app/services/axiosClient.js';
 
 const Sidebar = ({ user, onSelectConversation, onLogout }) => {
   const [conversations, setConversations] = useState([]);
@@ -9,7 +9,7 @@ const Sidebar = ({ user, onSelectConversation, onLogout }) => {
   useEffect(() => {
     const fetchConversations = async () => {
       try {
-        const response = await axios.get(`/conversations/${user.id}`);
+        const response = await apiClient.get(`/conversations/${user.id}`);
         setConversations(response.data.data ?? []);
       } catch (err) {
         console.error('Error fetching conversations:', err);
