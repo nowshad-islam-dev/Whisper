@@ -6,12 +6,27 @@ import historyRoutes from './routes/history.route.js';
 import client from './config/redisClient.js';
 import conversationRoutes from './routes/conversation.route.js';
 import pool from './config/db.js';
+import cors from 'cors';
 
 const app = express();
 
 // --- Middlewares ---
 app.use(express.json({ limit: '128kb' }));
 app.use(helmet());
+
+const allowedOrigins = [];
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error('Not allowed by CORS'));
+      }
+    },
+    credentials: true,
+  })
+);
 
 // Rate Limiter Middleware
 app.use(async (req, res, next) => {
