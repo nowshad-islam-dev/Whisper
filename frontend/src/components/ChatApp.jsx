@@ -12,21 +12,13 @@ const ChatApp = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const { user } = useSelector((state) => state.auth);
+  const [selectedConversation, setSelectedConversation] = useState(null);
 
   // Redirect to login if not authenticated
   if (!user) {
     navigate('/login');
     return null;
   }
-
-  const [selectedConversation, setSelectedConversation] = useState(null);
-
-  /*const user = { avatar: '', id: 1, username: 'John Doe' }; // Mock user data
-  const conversations = [
-    // Mock conversation data
-    { id: 1, name: 'Alice', avatar: '', lastMessage: 'Hello!' },
-    { id: 2, name: 'Bob', avatar: '', lastMessage: 'How are you?' },
-  ];*/
 
   const handleLogout = () => {
     dispatch(logout());
