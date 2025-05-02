@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import { login } from '../app/services/authService.js';
 import { setCredentials as setAuthCredentials } from '../app/features/authSlice.js';
 import { Button, TextField } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Login = () => {
+  const navigate = useNavigate();
   const dispatch = useDispatch();
   const [credentials, setCredentials] = useState({ email: '', password: '' });
 
@@ -14,6 +15,7 @@ const Login = () => {
     try {
       const { user, accessToken, refreshToken } = await login(credentials);
       dispatch(setAuthCredentials({ user, accessToken, refreshToken }));
+      navigate('/chat');
     } catch (err) {
       console.error('Login failed:', err);
     }
