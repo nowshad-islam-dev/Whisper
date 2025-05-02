@@ -14,7 +14,7 @@ const app = express();
 app.use(express.json({ limit: '128kb' }));
 app.use(helmet());
 
-const allowedOrigins = [];
+const allowedOrigins = ['http://localhost:3000'];
 app.use(
   cors({
     origin: (origin, callback) => {
