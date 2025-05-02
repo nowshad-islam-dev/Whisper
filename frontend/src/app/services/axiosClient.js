@@ -1,9 +1,11 @@
 import axios from 'axios';
 import store from '../store.js';
 import { setCredentials } from '../features/authSlice.js';
+import { refreshAccessToken } from './authService.js';
 
 const apiClient = axios.create({
   baseURL: 'http://localhost:5000/api',
+  withCredentials: true,
 });
 
 // Request Interceptor: Add Authorization header
@@ -42,7 +44,7 @@ apiClient.interceptors.response.use(
         store.dispatch(setCredentials({ accessToken }));
 
         // Retry the original request with the new token
-        originalRequest.headers.Authorization = `Beared ${accessToken}`;
+        originalRequest.headers.Authorization = `Bearer ${accessToken}`;
         return apiClient(originalRequest);
       } catch (err) {
         console.error('Failed to refresh token:', err);
