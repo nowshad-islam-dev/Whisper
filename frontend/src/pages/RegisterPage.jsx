@@ -1,19 +1,25 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
 import { register } from '../app/services/authService.js';
-import { setCredentials as setAuthCredentials } from '../app/features/authSlice.js';
 import { Button, TextField } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 const Register = () => {
-  const dispatch = useDispatch();
-  const [credentials, setCredentials] = useState({ email: '', password: '' });
+  const navigate = useNavigate();
+  const [credentials, setCredentials] = useState({
+    email: '',
+    username: '',
+    password: '',
+  });
 
   const handleRegister = async (e) => {
     e.preventDefault();
     try {
-      const { user, accessToken, refreshToken } = await register(credentials);
-      dispatch(setAuthCredentials({ user, accessToken, refreshToken }));
+      const { id } = await register(credentials);
+      if (id) {
+        navigate('/login');
+      } else {
+        console.error('Registration cannot be done:', err);
+      }
     } catch (err) {
       console.error('Registration failed:', err);
     }
