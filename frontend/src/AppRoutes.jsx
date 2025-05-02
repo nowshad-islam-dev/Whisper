@@ -14,15 +14,10 @@ const AppRoutes = () => {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/register" element={<RegisterPage />} />
 
-        {/* Protected Route */}
-        <Route
-          path="/chat"
-          element={
-            <ProtectedRoute>
-              <ChatApp />
-            </ProtectedRoute>
-          }
-        />
+        {/* Protected Routes using layout/nesting */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/chat" element={<ChatApp />} />
+        </Route>
 
         {/* Redirect to Login by Default */}
         <Route path="*" element={<LoginPage />} />
