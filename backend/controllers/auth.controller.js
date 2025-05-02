@@ -20,6 +20,15 @@ export const register = async (req, res) => {
     }
 
     const { username, email, password } = req.body;
+
+    const existingUser = await pool.query(
+      'SELECT * FROM users WHERE email = $1',
+      [email]
+    );
+
+    if (existingUser.rows.length > 0) {
+      return apiError(res, 400, 'Email already exists');
+    }
     const hashedPassword = await bcrypt.hash(password, 10);
 
     const result = await pool.query(
@@ -48,7 +57,7 @@ export const login = async (req, res) => {
       return apiError(res, 400, 'Invalid email or password');
     }
 
-    const user = result.rows[0];
+    let user = result.rows[0];
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
       return apiError(res, 400, 'Invalid email or password');
@@ -63,10 +72,11 @@ export const login = async (req, res) => {
     await client.set(`refreshToken:${refreshToken}`, user.id, {
       EX: 60 * 60 * 24 * 7, // Set expiration to 7 days
     });
-    const sanitizedUser = sanitizeUser(user);
+
+    user = sanitizeUser(user);
 
     return apiResponse(res, 200, 'Login successful', {
-      ...sanitizedUser,
+      user,
       accessToken,
       refreshToken,
     });
@@ -107,6 +117,6 @@ export const refreshAccessToken = async (req, res) => {
       refreshToken: newRefreshToken,
     });
   } catch (err) {
-    return apiError(res, 500, 'Token refresh failed', error);
+    return apiError(res, 500, 'Token refresh failed', err);
   }
 };
