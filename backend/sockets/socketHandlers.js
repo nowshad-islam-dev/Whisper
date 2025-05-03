@@ -27,6 +27,11 @@ export default function socketHandler(io) {
 
         const savedMessage = result.rows[0];
 
+        // ALSO send to the receiver's personal room (so they get it even if not viewing chat)
+        if (receiverId) {
+          io.to(receiverId.toString()).emit('receiveMessage', savedMessage);
+        }
+
         // Broadcast the message to the receiver
         io.to(conversationId).emit('receiveMessage', savedMessage);
       } catch (err) {
