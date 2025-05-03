@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 import { Avatar } from '@mui/material';
 import socket from '../utils/socket.js';
-import axios from 'axios';
+import apiClient from '../app/services/axiosClient.js';
 
 const ChatArea = ({ selectedConversation, userId }) => {
   const [messages, setMessages] = useState([]);
@@ -13,10 +13,10 @@ const ChatArea = ({ selectedConversation, userId }) => {
     const fetchChatHistory = async () => {
       if (selectedConversation) {
         try {
-          const response = await axios.get(
+          const response = await apiClient.get(
             `/history/chat-history/${selectedConversation.id}`
           );
-          setMessages(response.data.data ?? []); // Assuming the API returns data as { success: true, data: [...] }
+          setMessages(response.data.data ?? []);
         } catch (error) {
           console.error('Error fetching chat history:', error);
         }
@@ -27,13 +27,19 @@ const ChatArea = ({ selectedConversation, userId }) => {
   }, [selectedConversation]);
 
   useEffect(() => {
+    if (userId) {
+      socket.emit('joinRoom', userId); // Personal messages
+    }
+  }, [userId]);
+
+  useEffect(() => {
     // Join the conversation room and listen for messages
     if (!selectedConversation) return;
 
     socket.emit('joinConversation', selectedConversation.id);
 
     // Listen for incoming messages
-    socket.on('reveiveMessage', (message) => {
+    socket.on('receiveMessage', (message) => {
       setMessages((prevMessages) => [...prevMessages, message]);
     });
 
@@ -54,11 +60,6 @@ const ChatArea = ({ selectedConversation, userId }) => {
         conversationId: selectedConversation.id, // Use the conversation ID
         message: newMessage,
       });
-
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { sender_id: userId, message: newMessage, created_at: new Date() },
-      ]); // Ui update
       setNewMessage('');
     }
   };
