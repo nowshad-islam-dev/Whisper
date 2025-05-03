@@ -30,12 +30,12 @@ export const getAllConversations = async (req, res) => {
 
     const result = await pool.query(
       `
-        SELECT c.id, c.name, c.created_at
-        FROM conversations c
-        JOIN participants p ON c.id = p.conversation_id
-        WHERE p.user_id = $1
-        ORDER BY c.created_at DESC
-        `,
+      SELECT c.id, c.name, c.created_at
+      FROM conversations c
+      JOIN participants p ON c.id = p.conversation_id
+      WHERE p.user_id = $1
+      ORDER BY c.created_at DESC
+      `,
       [userId]
     );
 
