@@ -12,10 +12,17 @@ export default function socketHandler(io) {
     // Listen for incoming messages
     socket.on('sendMessage', async ({ senderId, conversationId, message }) => {
       try {
+        // 1. Find receiver_id
+        const receiverQuery = await pool.query(
+          `SELECT user_id FROM participants WHERE conversation_id = $1 AND user_id != $2 LIMIT 1`,
+          [conversationId, senderId]
+        );
+        const receiverId = receiverQuery.rows[0].user_id;
+
         // Save the message to the database
         const result = await pool.query(
-          'INSERT INTO messages (sender_id, conversation_id, message) VALUES ($1, $2, $3) RETURNING *',
-          [senderId, conversationId, message]
+          'INSERT INTO messages (sender_id, receiver_id, conversation_id, message) VALUES ($1, $2, $3, $4) RETURNING *',
+          [senderId, receiverId, conversationId, message]
         );
 
         const savedMessage = result.rows[0];
