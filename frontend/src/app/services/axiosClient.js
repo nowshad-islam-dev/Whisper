@@ -38,10 +38,19 @@ apiClient.interceptors.response.use(
       try {
         // Refresh the access token
         const { refreshToken } = store.getState().auth;
-        const { accessToken } = await refreshAccessToken(refreshToken);
+        if (!refreshToken) {
+          store.dispatch(logout());
+          window.location.href = '/login';
+          return;
+        }
+
+        const { accessToken, refreshToken: newRefreshToken } =
+          await refreshAccessToken(refreshToken);
 
         // Update the Redux state with the new access token
-        store.dispatch(setCredentials({ accessToken }));
+        store.dispatch(
+          setCredentials({ accessToken, refreshToken: newRefreshToken })
+        );
 
         // Retry the original request with the new token
         originalRequest.headers.Authorization = `Bearer ${accessToken}`;
