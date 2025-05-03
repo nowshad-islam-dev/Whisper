@@ -107,7 +107,7 @@ export const refreshAccessToken = async (req, res) => {
 
     // Replace the old refresh token in Redis
     await client.del(`refreshToken:${refreshToken}`);
-    await client.set(`refreshToken:${userId}`, newRefreshToken, {
+    await client.set(`refreshToken:${newRefreshToken}`, userId, {
       EX: 60 * 60 * 24 * 7, // Set expiration to 7 days
     });
 
